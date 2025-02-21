@@ -10,11 +10,6 @@ const isValid = (username)=>{
   return listUser.length !== 0;
 }
 
-const authenticatedUser = (username,password)=>{ 
-  var listUser = users.filter(u => u.username === username && u.password === password); 
-  return listUser.length === 0 ? null : listUser[0];
-}
-
 //only registered users can login
 regd_users.post("/register", (req,res) => {
   var username = req.body.username;
@@ -25,6 +20,11 @@ regd_users.post("/register", (req,res) => {
   users.push({username: username, password: password})
   return res.status(200).json({message: `Username ${username} registers success`});
 });
+
+const authenticatedUser = (username,password)=>{ 
+  var listUser = users.filter(u => u.username === username && u.password === password); 
+  return listUser.length === 0 ? null : listUser[0];
+}
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
@@ -65,6 +65,26 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   bookCheck.reviews[username] = review;
   return res.status(200).json({
     message: `User ${username} ${typeReview} review of book ${isbn} success`, 
+    book: bookCheck
+  });
+});
+
+// Add a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  var isbn = req.params.isbn;
+  var username = req.user.data.username;
+
+  if (!books || Object.keys(books).length === 0) {
+    return res.status(500).json({message: "List book is empty"});
+  }
+  var bookCheck = books[isbn];
+  if (!bookCheck) {
+    return res.status(501).json({message: `Book isbn ${isbn} is not available`});
+  }
+  var message = !bookCheck.reviews[username] ? "You haven't reviewed this book" : "Delete review success";
+  delete bookCheck.reviews[username];
+  return res.status(200).json({
+    message: message, 
     book: bookCheck
   });
 });
