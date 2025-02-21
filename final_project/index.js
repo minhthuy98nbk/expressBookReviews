@@ -25,7 +25,7 @@ app.use("/customer/auth/*", function auth(req,res,next){
         req.user = user; 
         next();
     } else {
-        return res.status(403).json({ message: "User not authenticated" }); // Return error if token verification fails
+        return res.status(403).json({ message: "User not authenticated" });
     }
 });
 });

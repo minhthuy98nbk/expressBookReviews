@@ -69,7 +69,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   });
 });
 
-// Add a book review
+// Delete a book review
 regd_users.delete("/auth/review/:isbn", (req, res) => {
   var isbn = req.params.isbn;
   var username = req.user.data.username;
